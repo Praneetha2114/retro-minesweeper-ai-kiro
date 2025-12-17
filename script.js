@@ -6,8 +6,8 @@ let revealed = [];
 let gameOver = false;
 
 function initGame() {
-  board = Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill(0));
-  revealed = Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill(false));
+  board = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(0));
+  revealed = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(false));
   gameOver = false;
 
   placeMines();
@@ -18,8 +18,8 @@ function initGame() {
 function placeMines() {
   let placed = 0;
   while (placed < MINE_COUNT) {
-    let r = Math.floor(Math.random() * GRID_SIZE);
-    let c = Math.floor(Math.random() * GRID_SIZE);
+    const r = Math.floor(Math.random() * GRID_SIZE);
+    const c = Math.floor(Math.random() * GRID_SIZE);
     if (board[r][c] !== "M") {
       board[r][c] = "M";
       placed++;
@@ -31,12 +31,20 @@ function calculateNumbers() {
   for (let r = 0; r < GRID_SIZE; r++) {
     for (let c = 0; c < GRID_SIZE; c++) {
       if (board[r][c] === "M") continue;
+
       let count = 0;
       for (let dr = -1; dr <= 1; dr++) {
         for (let dc = -1; dc <= 1; dc++) {
-          let nr = r + dr, nc = c + dc;
-          if (nr >= 0 && nr < GRID_SIZE && nc >= 0 && nc < GRID_SIZE) {
-            if (board[nr][nc] === "M") count++;
+          const nr = r + dr;
+          const nc = c + dc;
+          if (
+            nr >= 0 &&
+            nr < GRID_SIZE &&
+            nc >= 0 &&
+            nc < GRID_SIZE &&
+            board[nr][nc] === "M"
+          ) {
+            count++;
           }
         }
       }
@@ -67,17 +75,21 @@ function renderBoard() {
     for (let c = 0; c < GRID_SIZE; c++) {
       const cell = document.createElement("div");
       cell.className = "cell";
+
       if (revealed[r][c]) {
         cell.classList.add("revealed");
-        cell.textContent = board[r][c] === 0 ? "" : board[r][c];
+        if (board[r][c] !== 0) {
+          cell.textContent = board[r][c];
+        }
       }
-      cell.onclick = () => revealCell(r, c);
+
+      cell.addEventListener("click", () => revealCell(r, c));
       grid.appendChild(cell);
     }
   }
 }
 
-/* ---------- AI LOGIC ---------- */
+/* -------- AI EXPLANATION LOGIC -------- */
 
 function explainMove() {
   for (let r = 0; r < GRID_SIZE; r++) {
@@ -87,9 +99,16 @@ function explainMove() {
 
         for (let dr = -1; dr <= 1; dr++) {
           for (let dc = -1; dc <= 1; dc++) {
-            let nr = r + dr, nc = c + dc;
-            if (nr >= 0 && nr < GRID_SIZE && nc >= 0 && nc < GRID_SIZE) {
-              if (!revealed[nr][nc]) unrevealed.push([nr, nc]);
+            const nr = r + dr;
+            const nc = c + dc;
+            if (
+              nr >= 0 &&
+              nr < GRID_SIZE &&
+              nc >= 0 &&
+              nc < GRID_SIZE &&
+              !revealed[nr][nc]
+            ) {
+              unrevealed.push([nr, nc]);
             }
           }
         }
@@ -97,14 +116,14 @@ function explainMove() {
         if (unrevealed.length === board[r][c]) {
           return showExplanation(
             "Risky Move",
-            "This number equals the count of adjacent unrevealed tiles, so one of them is likely a mine."
+            "The number equals the count of adjacent unrevealed tiles, so one of them is likely a mine."
           );
         }
 
         if (unrevealed.length > board[r][c]) {
           return showExplanation(
             "Likely Safe Area",
-            "This tile shows a low number relative to its surrounding unrevealed tiles, making some nearby moves statistically safer."
+            "This numbered tile has more surrounding tiles than mines, making some nearby moves statistically safer."
           );
         }
       }
@@ -113,7 +132,7 @@ function explainMove() {
 
   showExplanation(
     "No Guaranteed Move",
-    "There is no logically guaranteed safe or risky move yet. The AI recommends revealing tiles away from clustered numbers."
+    "There is no certain safe or risky move yet. The AI suggests exploring areas away from numbered clusters."
   );
 }
 
@@ -123,4 +142,3 @@ function showExplanation(title, message) {
 }
 
 window.onload = initGame;
-
