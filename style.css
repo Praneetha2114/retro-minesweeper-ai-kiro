@@ -1,1 +1,40 @@
-/* Retro Minesweeper styles will go here */
+body {
+  font-family: Tahoma, sans-serif;
+  background: #c0c0c0;
+  padding: 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(8, 30px);
+  gap: 2px;
+  margin-bottom: 10px;
+}
+
+.cell {
+  width: 30px;
+  height: 30px;
+  background: #e0e0e0;
+  border: 2px solid #808080;
+  text-align: center;
+  line-height: 30px;
+  cursor: pointer;
+}
+
+.cell.revealed {
+  background: #ffffff;
+  border: 1px solid #808080;
+}
+
+button {
+  padding: 6px 12px;
+  margin-top: 10px;
+}
+
+.ai-box {
+  background: #ffffff;
+  border: 2px inset #808080;
+  padding: 10px;
+  margin-top: 10px;
+  width: 260px;
+}
