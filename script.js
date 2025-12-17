@@ -145,9 +145,4 @@ function explainMove() {
   }
 }
 
-function showExplanation(title, message) {
-  document.getElementById("ai-title").textContent = title;
-  document.getElementById("ai-text").textContent = message;
-}
 
-window.onload = initGame;
