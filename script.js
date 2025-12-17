@@ -84,7 +84,6 @@ function explainMove() {
     for (let c = 0; c < GRID_SIZE; c++) {
       if (revealed[r][c] && board[r][c] > 0) {
         let unrevealed = [];
-        let minesFound = 0;
 
         for (let dr = -1; dr <= 1; dr++) {
           for (let dc = -1; dc <= 1; dc++) {
@@ -98,14 +97,14 @@ function explainMove() {
         if (unrevealed.length === board[r][c]) {
           return showExplanation(
             "Risky Move",
-            "All adjacent unrevealed tiles may contain mines based on the number shown."
+            "This number equals the count of adjacent unrevealed tiles, so one of them is likely a mine."
           );
         }
 
-        if (board[r][c] === minesFound) {
+        if (unrevealed.length > board[r][c]) {
           return showExplanation(
-            "Safe Move",
-            "Adjacent unrevealed tiles are safe because all mines are already accounted for."
+            "Likely Safe Area",
+            "This tile shows a low number relative to its surrounding unrevealed tiles, making some nearby moves statistically safer."
           );
         }
       }
@@ -113,8 +112,8 @@ function explainMove() {
   }
 
   showExplanation(
-    "No Clear Move",
-    "The AI cannot determine a guaranteed safe or risky move at this stage."
+    "No Guaranteed Move",
+    "There is no logically guaranteed safe or risky move yet. The AI recommends revealing tiles away from clustered numbers."
   );
 }
 
