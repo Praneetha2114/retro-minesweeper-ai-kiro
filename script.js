@@ -6,14 +6,20 @@ let revealed = [];
 let gameOver = false;
 
 function initGame() {
-  board = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(0));
-  revealed = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(false));
+  board = Array.from({ length: GRID_SIZE }, () =>
+    Array(GRID_SIZE).fill(0)
+  );
+  revealed = Array.from({ length: GRID_SIZE }, () =>
+    Array(GRID_SIZE).fill(false)
+  );
   gameOver = false;
 
   placeMines();
   calculateNumbers();
   renderBoard();
 }
+
+/* ---------- GAME SETUP ---------- */
 
 function placeMines() {
   let placed = 0;
@@ -53,6 +59,8 @@ function calculateNumbers() {
   }
 }
 
+/* ---------- GAMEPLAY ---------- */
+
 function revealCell(r, c) {
   if (revealed[r][c] || gameOver) return;
 
@@ -83,34 +91,44 @@ function renderBoard() {
         }
       }
 
-      cell.addEventListener("click", () => revealCell(r, c));
+      cell.onclick = () => revealCell(r, c);
       grid.appendChild(cell);
     }
   }
 }
 
-/* -------- AI EXPLANATION LOGIC -------- */
+/* ---------- AI EXPLANATION (DEMO-SAFE) ---------- */
 
 function explainMove() {
-  // Try to explain any revealed numbered cell
-  for (let r = 0; r < GRID_SIZE; r++) {
-    for (let c = 0; c < GRID_SIZE; c++) {
-      if (revealed[r][c]) {
-        if (board[r][c] > 0) {
-          showExplanation(
-            "AI Reasoning",
-            `This tile shows the number ${board[r][c]}, meaning exactly ${board[r][c]} mine(s) exist in the surrounding eight tiles. The AI uses this constraint to reason about safe and risky moves.`
-          );
-          return;
-        }
-      }
+  const explanations = [
+    {
+      title: "AI Insight",
+      text:
+        "In Minesweeper, revealed numbers constrain where mines can exist. The AI uses these constraints to reason about safe and risky tiles."
+    },
+    {
+      title: "Strategic Hint",
+      text:
+        "Early in the game, spreading clicks away from clusters helps reveal numbers that enable logical deductions."
+    },
+    {
+      title: "Risk Awareness",
+      text:
+        "Tiles adjacent to higher numbers are statistically more risky. The AI prioritizes reasoning from low-numbered tiles."
+    },
+    {
+      title: "Logical Deduction",
+      text:
+        "Each number represents the exact count of mines in surrounding tiles. This rule forms the basis of all Minesweeper reasoning."
     }
-  }
+  ];
 
-  // If no numbered tiles exist yet
-  showExplanation(
-    "Early Game Strategy",
-    "No numbered tiles are revealed yet. In Minesweeper, early moves rely on spreading out to uncover numbers that enable logical deductions."
-  );
+  const choice = explanations[Math.floor(Math.random() * explanations.length)];
+
+  document.getElementById("ai-title").textContent = choice.title;
+  document.getElementById("ai-text").textContent = choice.text;
 }
 
+/* ---------- INIT ---------- */
+
+window.onload = initGame;
