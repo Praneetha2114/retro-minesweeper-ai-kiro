@@ -92,57 +92,25 @@ function renderBoard() {
 /* -------- AI EXPLANATION LOGIC -------- */
 
 function explainMove() {
-  let explained = false;
-
-  for (let r = 0; r < GRID_SIZE && !explained; r++) {
-    for (let c = 0; c < GRID_SIZE && !explained; c++) {
-      if (revealed[r][c] && board[r][c] > 0) {
-        let unrevealed = [];
-
-        for (let dr = -1; dr <= 1; dr++) {
-          for (let dc = -1; dc <= 1; dc++) {
-            const nr = r + dr;
-            const nc = c + dc;
-            if (
-              nr >= 0 &&
-              nr < GRID_SIZE &&
-              nc >= 0 &&
-              nc < GRID_SIZE &&
-              !revealed[nr][nc]
-            ) {
-              unrevealed.push([nr, nc]);
-            }
-          }
+  // Try to explain any revealed numbered cell
+  for (let r = 0; r < GRID_SIZE; r++) {
+    for (let c = 0; c < GRID_SIZE; c++) {
+      if (revealed[r][c]) {
+        if (board[r][c] > 0) {
+          showExplanation(
+            "AI Reasoning",
+            `This tile shows the number ${board[r][c]}, meaning exactly ${board[r][c]} mine(s) exist in the surrounding eight tiles. The AI uses this constraint to reason about safe and risky moves.`
+          );
+          return;
         }
-
-        if (unrevealed.length === board[r][c]) {
-          showExplanation(
-            "Risky Area",
-            "This number matches the count of adjacent unrevealed tiles, so one of them is likely a mine."
-          );
-        } else if (unrevealed.length > board[r][c]) {
-          showExplanation(
-            "Constrained Area",
-            "This numbered tile limits how mines can be placed nearby. Some adjacent tiles are safer than others."
-          );
-        } else {
-          showExplanation(
-            "Logical Constraint",
-            "This tile shows how nearby unrevealed tiles are constrained by the number displayed."
-          );
-        }
-
-        explained = true;
       }
     }
   }
 
-  if (!explained) {
-    showExplanation(
-      "Early Game Insight",
-      "Not enough information yet. Revealing tiles away from clusters can help uncover useful numbers."
-    );
-  }
+  // If no numbered tiles exist yet
+  showExplanation(
+    "Early Game Strategy",
+    "No numbered tiles are revealed yet. In Minesweeper, early moves rely on spreading out to uncover numbers that enable logical deductions."
+  );
 }
-
 
