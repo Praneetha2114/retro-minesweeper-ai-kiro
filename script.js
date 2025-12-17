@@ -92,8 +92,10 @@ function renderBoard() {
 /* -------- AI EXPLANATION LOGIC -------- */
 
 function explainMove() {
-  for (let r = 0; r < GRID_SIZE; r++) {
-    for (let c = 0; c < GRID_SIZE; c++) {
+  let explained = false;
+
+  for (let r = 0; r < GRID_SIZE && !explained; r++) {
+    for (let c = 0; c < GRID_SIZE && !explained; c++) {
       if (revealed[r][c] && board[r][c] > 0) {
         let unrevealed = [];
 
@@ -114,26 +116,33 @@ function explainMove() {
         }
 
         if (unrevealed.length === board[r][c]) {
-          return showExplanation(
-            "Risky Move",
-            "The number equals the count of adjacent unrevealed tiles, so one of them is likely a mine."
+          showExplanation(
+            "Risky Area",
+            "This number matches the count of adjacent unrevealed tiles, so one of them is likely a mine."
+          );
+        } else if (unrevealed.length > board[r][c]) {
+          showExplanation(
+            "Constrained Area",
+            "This numbered tile limits how mines can be placed nearby. Some adjacent tiles are safer than others."
+          );
+        } else {
+          showExplanation(
+            "Logical Constraint",
+            "This tile shows how nearby unrevealed tiles are constrained by the number displayed."
           );
         }
 
-        if (unrevealed.length > board[r][c]) {
-          return showExplanation(
-            "Likely Safe Area",
-            "This numbered tile has more surrounding tiles than mines, making some nearby moves statistically safer."
-          );
-        }
+        explained = true;
       }
     }
   }
 
-  showExplanation(
-    "No Guaranteed Move",
-    "There is no certain safe or risky move yet. The AI suggests exploring areas away from numbered clusters."
-  );
+  if (!explained) {
+    showExplanation(
+      "Early Game Insight",
+      "Not enough information yet. Revealing tiles away from clusters can help uncover useful numbers."
+    );
+  }
 }
 
 function showExplanation(title, message) {
