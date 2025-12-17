@@ -97,7 +97,7 @@ function renderBoard() {
   }
 }
 
-/* ---------- AI EXPLANATION (DEMO-SAFE) ---------- */
+/* ---------- AI EXPLANATION ---------- */
 
 function explainMove() {
   const explanations = [
