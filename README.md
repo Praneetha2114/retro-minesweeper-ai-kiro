@@ -6,4 +6,14 @@ the logic behind the game.
 
 Built for the Kiro Week 4 Retro Revival Challenge.
 
-Kiro was used conceptually to design and validate complex game logic, break down AI reasoning into steps, and iterate quickly on explainability. The project structure follows Kiro’s workflow-driven approach.
+
+## How Kiro Helped
+
+Kiro accelerated development by providing a structured, workflow-driven approach
+to designing complex logic. The AI explanation system was broken down into clear
+steps such as board state analysis, constraint interpretation, and user-facing
+reasoning.
+
+This approach reduced debugging effort, improved clarity in the AI logic, and
+made it easier to iterate on explainable gameplay behavior.
+
